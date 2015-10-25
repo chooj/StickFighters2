@@ -1,0 +1,1487 @@
+// user variables
+float uHP = 100;
+float uX = 0;
+float uY = 0;
+float hX = 310;
+float hY = 200;
+float bX = 300;
+float bY = 235;
+float aX1 = 330;
+float aY1 = 300;
+float aX2 = 355;
+float aY2 = 220;
+float aX3 = 330;
+float aY3 = 300;
+float aX4 = 355;
+float aY4 = 220;
+float lX1 = 280;
+float lY1 = 390;
+float lX2 = 275;
+float lY2 = 460;
+float lX3 = 340;
+float lY3 = 390;
+float lX4 = 345;
+float lY4 = 460;
+int lSpeed1 = 2;
+int lSpeed2 = 2;
+boolean ducking = false;
+boolean left = false;
+boolean right = false;
+boolean canLeft = true;
+boolean canRight = true;
+boolean walking = false;
+int punchLength = 200;
+int punchingM = -punchLength;
+boolean canPunch = true;
+boolean punching = false;
+int kickLength = 200;
+int kickingM = -kickLength;
+boolean canKick = true;
+boolean kicking = false;
+boolean canJump = true;
+float jumpSpeed;
+boolean jumping = false;
+float punchPower = 1;
+float kickPower = 1;
+float defensePower = 0;
+
+// ai variables
+float eHP = 100;
+float eX = 0;
+float eY = 0;
+float ehX = 690;
+float ehY = 200;
+float ebX = 700;
+float ebY = 235;
+float eaX1 = 670;
+float eaY1 = 300;
+float eaX2 = 645;
+float eaY2 = 220;
+float eaX3 = 670;
+float eaY3 = 300;
+float eaX4 = 645;
+float eaY4 = 220;
+float elX1 = 720;
+float elY1 = 390;
+float elX2 = 725;
+float elY2 = 460;
+float elX3 = 660;
+float elY3 = 390;
+float elX4 = 655;
+float elY4 = 460;
+int elSpeed1 = 2;
+int elSpeed2 = 2;
+boolean educking = false;
+boolean ewalking = false;
+int epunchLength = 500;
+int epunchingM = -epunchLength;
+boolean epunching = false;
+int ekickLength = 500;
+int ekickingM = -ekickLength;
+boolean ekicking = false;
+float ejumpSpeed;
+boolean ejumping = false;
+float epunchPower = 1;
+float ekickPower = 1;
+float edefensePower = 0;
+
+// ai acting
+int reactTime = 495;
+int hitTimerM = 3000;
+int hitTime = 3000;
+float hitRand;
+float eStrength = 78;
+float punchBlock;
+float kickBlock;
+boolean ecanJump = true;
+
+// things
+int level = 1;
+int levelsCanDo = 1;
+float curtainW = 500;
+// engaging
+boolean engaged = false;
+int disengageM = -300;
+boolean canEngage = true;
+int justEngagedM;
+// stuff
+int startM;
+boolean dead = false;
+boolean won = false;
+boolean paused = false;
+// fonts
+PFont font1 = createFont("Avenir-Black", 15);
+
+// whole game booleans
+float[] button = new float[3];
+boolean inMenu = true;
+boolean inGame = false;
+boolean inLevels = false;
+boolean inShop = false;
+boolean inAbout = false;
+boolean inDirections = false;
+boolean knowsDirections = false;
+
+// shop
+int coins = 0;
+float shopX = 0;
+float scrollbarX = 0;
+boolean scrolling = false;
+boolean[] hasG = new boolean[4];
+boolean[] hasK = new boolean[4];
+boolean[] hasH = new boolean[4];
+int equipG = 1;
+int equipK = 1;
+int equipH = 1;
+int[] cost = new int[4];
+// levels
+float levelsX = 0;
+boolean[] wonLevel = new boolean[10];
+
+void walkSetup() {
+  lY1 = 382;
+  lSpeed1 = 2;
+  lSpeed2 = 2;
+  elY1 = 382;
+  elSpeed1 = 2;
+  elSpeed2 = 2;
+}
+
+void duck() {
+  hY = 210;
+  aX1 = hX + 40;
+  aY1 = bY + 35;
+  aX2 = hX + 45;
+  aY2 = bY - 50;
+  aX3 = hX + 40;
+  aY3 = bY + 35;
+  aX4 = hX + 45;
+  aY4 = bY - 50;
+}
+
+void walk() {
+  lY2 = lY1 + 70;
+  lY4 = lY3 + 70;
+  lY1 = lY1 + lSpeed1;
+  if ((lY1 >= 390)||(lY1 < 383)) {
+    lSpeed1 = -lSpeed1;
+  }
+  lY3 = lY3 - lSpeed2;
+  if ((lY3 < 383)||(lY3 >= 390)) {
+    lSpeed2 = -lSpeed2;
+  }
+}
+
+void punch() {
+  aX1 = 350;
+  aY1 = 260;
+  aX2 = 420;
+  aY2 = 260;
+}
+
+void kick() {
+  lX3 = 350;
+  lY3 = 345;
+  lX4 = 440;
+  lY4 = 350;
+}
+
+void educk() {
+  ehY = 210;
+  eaX1 = ehX - 40;
+  eaY1 = ebY + 35;
+  eaX2 = ehX - 45;
+  eaY2 = ebY - 50;
+  eaX3 = ehX - 40;
+  eaY3 = ebY + 35;
+  eaX4 = ehX - 45;
+  eaY4 = ebY - 50;
+}
+
+void epunch() {
+  eaX1 = 650;
+  eaY1 = 260;
+  eaX2 = 580;
+  eaY2 = 260;
+}
+
+void ekick() {
+  elX3 = 650;
+  elY3 = 345;
+  elX4 = 560;
+  elY4 = 350;
+}
+
+void ewalk() {
+  elX3 = 660;
+  elX4 = 655;
+  elY2 = elY1 + 70;
+  elY4 = elY3 + 70;
+  elY1 = elY1 + elSpeed1;
+  if ((elY1 >= 390)||(elY1 < 383)) {
+    elSpeed1 = -elSpeed1;
+  }
+  elY3 = elY3 - elSpeed2;
+  if ((elY3 < 383)||(elY3 >= 390)) {
+    elSpeed2 = -elSpeed2;
+  }
+}
+
+void finished() {
+  background(255);
+  threeButtons();
+  fill(0);
+  textAlign(CENTER);
+  textFont(font1, 50);
+  text("LEVELS", width/2, 250);
+  text("MENU", width/2, 340);
+  text("SHOP", width/2, 430);
+}
+
+void pause() {
+  background(255);
+  threeButtons();
+  fill(0);
+  textAlign(CENTER);
+  textFont(font1, 80);
+  text("PAUSED", width/2, 130);
+  textSize(50);
+  text("RESUME", width/2, 250);
+  text("RESTART", width/2, 340);
+  text("MENU", width/2, 430);
+}
+
+void winning() {
+  finished();
+  textSize(80);
+  text("YOU WIN", width/2, 110);
+  textSize(30);
+  text("COINS EARNED   " + round(uHP/2), width/2, 175);
+}
+
+void death() {
+  finished();
+  textSize(80);
+  text("YOU LOSE", width/2, 110);
+  textSize(30);
+  text("COINS EARNED   " + round((100-eHP)/5), width/2, 175);
+}
+
+void reset() {
+  if (won == true) {
+    coins = coins + round(uHP/2);
+  } else {
+    coins = coins + round((100-eHP)/5);
+  }
+  uX = 0;
+  uY = 0;
+  eX = 0;
+  eY = 0;
+  uHP = 100;
+  eHP = 100;
+  engaged = false;
+  won = false;
+  dead = false;
+}
+
+void threeButtons() {
+  for (int i = 0; i < button.length; i++) {
+    fill(255);
+    stroke(button[i]);
+    strokeWeight(3);
+    ellipse(width/2 - 100, 230 + i*90, 60, 60);
+    ellipse(width/2 + 100, 230 + i*90, 60, 60);
+    rect(width/2 - 100, 200 + i*90, 200, 60);
+    stroke(255);
+    line(width/2 - 100, 203 + i*90, width/2 - 100, 257 + i*90);
+    line(width/2 + 100, 203 + i*90, width/2 + 100, 257 + i*90);
+    if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 200 + i*90 && mouseY < 260 + i*90) {
+      if (button[i] > 0) {
+        button[i] = button[i] - 17;
+      }
+    } else {
+      if (button[i] < 255) {
+        button[i] = button[i] + 17;
+      }
+    }
+  }
+}
+
+void scrollbar() {
+  fill(200);
+  noStroke();
+  rect(0, height - 15, width, 15);
+  fill(button[1]);
+  rect(scrollbarX, height - 15, 200, 15);
+  if ((scrolling == true)||(mouseX > scrollbarX && mouseX < scrollbarX + 200 && mouseY > height - 15 && mouseY < height)) {
+    if (button[1] > 100) {
+      button[1] = button[1] - 5;
+    }
+  } else {
+    if (button[1] < 150) {
+      button[1] = button[1] + 5;
+    }
+  }
+  if (scrolling == true) {
+    if (scrollbarX + 100 < mouseX && scrollbarX <= 800) {
+      scrollbarX = scrollbarX + (mouseX-scrollbarX-100)/10;
+    }
+    if (scrollbarX + 100 > mouseX && scrollbarX >= 0) {
+      scrollbarX = scrollbarX - (scrollbarX+100-mouseX)/10;
+    }
+  }
+}
+
+void arrow() {
+  fill(255);
+  stroke(button[0]);
+  strokeWeight(3);
+  ellipse(60, 60, 60, 60);
+  stroke(0);
+  line(45, 60, 75, 60);
+  line(45, 60, 60, 45);
+  line(45, 60, 60, 75);
+  if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
+    if (button[0] > 0) {
+      button[0] = button[0] - 17;
+    }
+  } else {
+    if (button[0] < 255) {
+      button[0] = button[0] + 17;
+    }
+  }
+  fill(0);
+  textSize(30);
+  textAlign(LEFT);
+  text("COINS   " + coins, 720, 70);
+  line(0, 120, width, 120);
+}
+
+void setup() {
+  size(1000, 500);
+  for (int i = 0; i < button.length; i++) {
+    button[i] = 255;
+  }
+  hasG[0] = true;
+  hasG[1] = false;
+  hasG[2] = false;
+  hasG[3] = false;
+  hasK[0] = true;
+  hasK[1] = false;
+  hasK[2] = false;
+  hasK[3] = false;
+  hasH[0] = true;
+  hasH[1] = false;
+  hasH[2] = false;
+  hasH[3] = false;
+  cost[0] = 0;
+  cost[1] = 25;
+  cost[2] = 100;
+  cost[3] = 150;
+  for (int i = 0; i < wonLevel.length; i++) {
+    wonLevel[i] = false;
+  }
+}
+
+void draw() {
+  background(255);
+
+  if (inMenu == true) {
+    menu();
+  }
+  if (inGame == true) {
+    game();
+  }
+  if (inLevels == true) {
+    levels();
+  }
+  if (inShop == true) {
+    shop();
+  }
+  if (inAbout == true) {
+    about();
+  }
+  if (inDirections == true) {
+    directions();
+  }
+}
+
+void mousePressed() {
+  if (inLevels == true) {
+    if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
+      inLevels = false;
+      inMenu = true;
+      scrollbarX = 0;
+      for (int i = 0; i < button.length; i++) {
+        button[i] = 255;
+      }
+    }
+    if (mouseX > scrollbarX && mouseX < scrollbarX + 200 && mouseY > height - 15 && mouseY < height) {
+      scrolling = true;
+    }
+    for (int i = 0; i < 10; i++) {
+      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        inLevels = false;
+        if (knowsDirections == true) {
+          inGame = true;
+          level = i + 1;
+          startM = millis();
+          for (int j = 0; j < button.length; j++) {
+            button[j] = 255;
+          }
+        } else {
+          inDirections = true;
+          button[1] = 255;
+        }
+      }
+    }
+  }
+  if (inDirections == true) {
+    if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
+      inDirections = false;
+      inLevels = true;
+      button[0] = 255;
+      button[1] = 150;
+    }
+    if (mouseX > 910 && mouseX < 970 && mouseY > 410 && mouseY < 470) {
+      inDirections = false;
+      inGame = true;
+      startM = millis();
+      knowsDirections = true;
+      for (int i = 0; i < button.length; i++) {
+        button[i] = 255;
+      }
+    }
+  }
+  if (inShop == true) {
+    if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
+      inShop = false;
+      inMenu = true;
+      scrollbarX = 0;
+      for (int i = 0; i < button.length; i++) {
+        button[i] = 255;
+      }
+    }
+    if (mouseX > scrollbarX && mouseX < scrollbarX + 200 && mouseY > height - 15 && mouseY < height) {
+      scrolling = true;
+    }
+    for (int i = 0; i < 4; i++) {
+      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        if (hasG[i] == true) {
+          equipG = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasG[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+      if (mouseX > 1240 + levelsX + i*300 && mouseX < 1470 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        if (hasK[i] == true) {
+          equipK = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasK[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+      if (mouseX > 2440 + levelsX + i*300 && mouseX < 2670 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        if (hasH[i] == true) {
+          equipH = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasH[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+    }
+  }
+  if (inAbout == true) {
+    if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
+      inAbout = false;
+      inMenu = true;
+      for (int i = 0; i < button.length; i++) {
+        button[i] = 255;
+      }
+    }  
+    if (mouseX > 50 && mouseX < 569 && mouseY > 275 && mouseY < 310) {
+      link("https://github.com/chooj/StickFighters");
+    }
+    if (mouseX > 50 && mouseX < 374 && mouseY > 400 && mouseY < 435) {
+      link("http://github.com/chooj");
+    }
+  }
+  if (inMenu == true) {
+    if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 200 && mouseY < 260) {
+      inMenu = false;
+      inLevels = true;
+      button[0] = 255;
+      button[1] = 150;
+    }
+    if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 290 && mouseY < 350) {
+      inMenu = false;
+      inShop = true;
+      button[0] = 255;
+      button[1] = 150;
+    }
+    if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 380 && mouseY < 440) {
+      inMenu = false;
+      inAbout = true;
+      for (int i = 0; i < button.length; i++) {
+        button[i] = 255;
+      }
+    }
+  }
+  if (inGame == true) {
+    if ((won == true)||(dead == true)) {
+      if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 200 && mouseY < 260) {
+        inGame = false;
+        inLevels = true;
+        if (won == true) {
+          levelsCanDo = levelsCanDo + 1;
+          wonLevel[level-1] = true;
+        }
+        reset();
+        button[0] = 255;
+        button[1] = 150;
+      }
+      if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 290 && mouseY < 350) {
+        inGame = false;
+        inMenu = true;
+        if (won == true) {
+          levelsCanDo = levelsCanDo + 1;
+          wonLevel[level-1] = true;
+        }
+        reset();
+        for (int i = 0; i < button.length; i++) {
+          button[i] = 255;
+        }
+      }
+      if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 380 && mouseY < 440) {
+        inGame = false;
+        inShop = true;
+        if (won == true) {
+          levelsCanDo = levelsCanDo + 1;
+          wonLevel[level-1] = true;
+        }
+        reset();
+        button[0] = 255;
+        button[1] = 150;
+      }
+    } else {
+      if (millis() - startM >= 4750) {
+        if (paused == true) {
+          if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 200 && mouseY < 260) {
+            paused = false;
+          }
+          if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 290 && mouseY < 350) {
+            paused = false;
+            reset();
+            startM = millis();
+          }
+          if (mouseX > width/2 - 130 && mouseX < width/2 + 130 && mouseY > 380 && mouseY < 440) {
+            paused = false;
+            inGame = false;
+            inMenu = true;
+            reset();
+            for (int i = 0; i < button.length; i++) {
+              button[i] = 255;
+            }
+          }
+        } else {
+          paused = true;
+        }
+      }
+    }
+  }
+}
+
+void mouseReleased() {
+  if (inLevels == true) {
+    if (scrolling == true) {
+      scrolling = false;
+    }
+  }
+  if (inShop == true) {
+    if (scrolling == true) {
+      scrolling = false;
+    }
+  }
+}
+
+void keyPressed() {
+  if (won == false && dead == false && millis() - startM > 4750) {
+    if (keyCode == DOWN && punching == false) {
+      ducking = true;
+    }
+    if (keyCode == LEFT && kicking == false) {
+      right = false;
+      left = true;
+      if (canLeft == true) {
+        walkSetup();
+        canLeft = false;
+      }
+    }
+    if (keyCode == RIGHT && kicking == false) {
+      left = false;
+      right = true;
+      if (canRight == true) {
+        walkSetup();
+        canRight = false;
+      }
+    }
+    if (key == ' ' && canPunch == true && ducking == false && kicking == false && jumping == false) {
+      punchingM = millis();
+      canPunch = false;
+      punchBlock = random(100);
+    }
+    if (key == 'x' && canKick == true && punching == false && walking == false && eY >= 0) {
+      kickingM = millis();
+      canKick = false;
+      kickBlock = random(100);
+    }
+    if (keyCode == UP && canJump == true && kicking == false) {
+      jumpSpeed = -10;
+      canJump = false;
+    }
+    if (key == 'd' && kicking == false && engaged == true && uX > -101.5) {
+      engaged = false;
+      disengageM = millis();
+      lY1 = 382;
+      lSpeed1 = 2;
+      lSpeed2 = 2;
+      left = true;
+    }
+  }
+}
+
+void keyReleased() {
+  if (keyCode == DOWN) {
+    ducking = false;
+  }
+  if (keyCode == LEFT) {
+    left = false;
+    canLeft = true;
+  }
+  if (keyCode == RIGHT) {
+    right = false;
+    canRight = true;
+  }
+  if (key == ' ') {
+    canPunch = true;
+  }
+  if (key == 'x') {
+    canKick = true;
+  }
+}
+
+void menu() {
+  fill(0);
+  textFont(font1, 80);
+  textAlign(CENTER);
+  text("StickFighters", width/2, 130);
+  textSize(120);
+  text("2", 765, 140);
+  threeButtons();
+  fill(0);
+  textSize(50);
+  text("PLAY", width/2, 250);
+  text("SHOP", width/2, 340);
+  text("ABOUT", width/2, 430);
+  textSize(10);
+  textAlign(LEFT);
+  text("Created by chooj", 1, height - 3);
+}
+
+void game() {
+  if (millis() - startM < 4000) {
+    curtainW = 500;
+  } else {
+    curtainW = 0.95*curtainW;
+  }
+  // user
+  stroke(0);
+  strokeWeight(5);
+  // body
+  line(bX + uX, bY + uY, bX + uX, bY + 115 + uY);
+  // head
+  if (equipH == 1) {
+    fill(255);
+    defensePower = 1;
+  }
+  if (equipH == 2) {
+    fill(255, 0, 0);
+    defensePower = 1.5;
+  }
+  if (equipH == 3) {
+    fill(0, 0, 255);
+    defensePower = 2;
+  }
+  if (equipH == 4) {
+    fill(205, 127, 50);
+    defensePower = 2.5;
+  }
+  ellipse(hX + uX, hY + uY, 70, 70);
+  fill(255);
+  rect(hX - 10 + uX, hY - 10 + uY, 43, 20);
+  noStroke();
+  rect(hX + 30 + uX, hY - 7 + uY, 8, 15);
+  stroke(0);
+  // arms
+  line(bX + uX, bY + 25 + uY, aX1 + uX, aY1 + uY);
+  line(aX1 + uX, aY1 + uY, aX2 + uX, aY2 + uY);
+  line(bX + uX, bY + 25 + uY, aX3 + uX, aY3 + uY);
+  line(aX3 + uX, aY3 + uY, aX4 + uX, aY4 + uY);
+  // legs
+  line(bX + uX, bY + 115 + uY, lX1 + uX, lY1 + uY);
+  line(bX + uX, bY + 115 + uY, lX3 + uX, lY3 + uY);
+  if (equipK == 1) {
+    stroke(0);
+    kickPower = 1;
+  }
+  if (equipK == 2) {
+    stroke(255, 0, 0);
+    kickPower = 2;
+  }
+  if (equipK == 3) {
+    stroke(0, 0, 255);
+    kickPower = 3;
+  }
+  if (equipK == 4) {
+    stroke(205, 127, 50);
+    kickPower = 5;
+  }
+  line(lX1 + uX, lY1 + uY, lX2 + uX, lY2 + uY);
+  line(lX3 + uX, lY3 + uY, lX4 + uX, lY4 + uY);
+  // gloves
+  if (equipG == 1) {
+    fill(255);
+    punchPower = 1;
+  }
+  if (equipG == 2) {
+    fill(255, 0, 0);
+    punchPower = 2;
+  }
+  if (equipG == 3) {
+    fill(0, 0, 255);
+    punchPower = 3;
+  }
+  if (equipG == 4) {
+    fill(205, 127, 50);
+    punchPower = 5;
+  }
+  ellipse(aX2 + uX, aY2 + uY, 15, 15);
+  ellipse(aX4 + uX, aY4 + uY, 15, 15);
+
+  // user movements
+  if (paused == false) {
+    // ducking
+    if (ducking == true && kicking == false && jumping == false) {
+      duck();
+    } else {
+      if (punching == false) {
+        hY = 200;
+        aX1 = 330;
+        aY1 = 300;
+        aX2 = 355;
+        aY2 = 220;
+        aX3 = 330;
+        aY3 = 300;
+        aX4 = 355;
+        aY4 = 220;
+      }
+    }
+    // walking
+    if (left == false && right == false) {
+      walking = false;
+    }
+    if (left == true) {
+      if (ekicking == true) {
+        left = false;
+      }
+      if (uX > -100) {
+        uX = uX - 3.5;
+        walking = true;
+      }
+    }
+    if (right == true) {
+      if (ekicking == true) {
+        right = false;
+      }
+      if (uX < 300) {
+        uX = uX + 3.5;
+        walking = true;
+      }
+    }
+    if (walking == true && uX < 300 && uX > -100) {
+      if (jumping == false) {
+        walk();
+      }
+    } else {
+      lY1 = 390;
+      lY2 = 460;
+      lY3 = 390;
+      lY4 = 460;
+    }
+    // punching
+    if (millis() - punchingM < punchLength) {
+      punching = true;
+    } else {
+      punching = false;
+    }
+    if (punching == true) {
+      punch();
+    } else {
+      if (ducking == false) {
+        aX1 = 330;
+        aY1 = 300;
+        aX2 = 355;
+        aY2 = 220;
+      }
+    }
+    // kicking
+    if (millis() - kickingM < kickLength) {
+      kicking = true;
+    } else {
+      kicking = false;
+    }
+    if (kicking == true) {
+      kick();
+    } else {
+      ecanJump = true;
+      if (walking == false) {
+        lX3 = 340;
+        lY3 = 390;
+        lX4 = 345;
+        lY4 = 460;
+      }
+    }
+    // jumping
+    uY = uY + jumpSpeed;
+    jumpSpeed = jumpSpeed + 0.5;
+    if (uY > 0) {
+      uY = 0;
+    }
+    if (uY == 0) {
+      jumping = false;
+      canJump = true;
+    }
+    if (uY < 0) {
+      jumping = true;
+      canJump = false;
+    }
+    // disengaging
+    if (millis() - disengageM <= 300) {
+      left = true;
+    }
+  }
+
+  // ai
+  if (level == 1) {
+    epunchPower = 1;
+    ekickPower = 1;
+    edefensePower = 1;
+  }
+  if (level >= 2 && level <= 4) {
+    epunchPower = 2;
+  }
+  if (level >= 5 && level <= 7) {
+    epunchPower = 3;
+  }
+  if (level >= 8 && level <= 10) {
+    epunchPower = 5;
+  }
+  if (level == 2) {
+    ekickPower = 1;
+  }
+  if (level >= 3 && level <= 5) {
+    ekickPower = 2;
+  }
+  if (level >= 6 && level <= 8) {
+    ekickPower = 3;
+  }
+  if (level >= 9 && level <= 10) {
+    ekickPower = 5;
+  }
+  if (level >= 2 && level <= 3) {
+    edefensePower = 1;
+  }
+  if (level >= 4 && level <= 6) {
+    edefensePower = 1.5;
+  }
+  if (level >= 7 && level <= 9) {
+    edefensePower = 2;
+  }
+  if (level == 10) {
+    edefensePower = 2.5;
+  }
+  stroke(0);
+  strokeWeight(5);
+  // body
+  line(ebX + eX, ebY + eY, ebX + eX, ebY + 115 + eY);
+  // head
+  if (edefensePower == 1) {
+    fill(255);
+  }
+  if (edefensePower == 1.5) {
+    fill(255, 0, 0);
+  }
+  if (edefensePower == 2) {
+    fill(0, 0, 255);
+  }
+  if (edefensePower == 2.5) {
+    fill(205, 127, 50);
+  }
+  ellipse(ehX + eX, ehY + eY, 70, 70);
+  fill(255);
+  rect(ehX - 33 + eX, ehY - 10 + eY, 43, 20);
+  noStroke();
+  rect(ehX - 38 + eX, ehY - 7 + eY, 8, 15);
+  stroke(0);
+  // arms
+  line(ebX + eX, ebY + 25 + eY, eaX1 + eX, eaY1 + eY);
+  line(eaX1 + eX, eaY1 + eY, eaX2 + eX, eaY2 + eY);
+  line(ebX + eX, ebY + 25 + eY, eaX3 + eX, eaY3 + eY);
+  line(eaX3 + eX, eaY3 + eY, eaX4 + eX, eaY4 + eY);
+  // legs
+  line(ebX + eX, ebY + 115 + eY, elX1 + eX, elY1 + eY);
+  line(ebX + eX, bY + 115 + eY, elX3 + eX, elY3 + eY);
+  if (ekickPower == 1) {
+    stroke(0);
+  }
+  if (ekickPower == 2) {
+    stroke(255, 0, 0);
+  }
+  if (ekickPower == 3) {
+    stroke(0, 0, 255);
+  }
+  if (ekickPower == 5) {
+    stroke(205, 127, 50);
+  }
+  line(elX1 + eX, elY1 + eY, elX2 + eX, elY2 + eY);
+  line(elX3 + eX, elY3 + eY, elX4 + eX, elY4 + eY);
+  // gloves
+  stroke(0);
+  if (epunchPower == 1) {
+    fill(255);
+  }
+  if (epunchPower == 2) {
+    fill(255, 0, 0);
+  }
+  if (epunchPower == 3) {
+    fill(0, 0, 255);
+  }
+  if (epunchPower == 5) {
+    fill(205, 127, 50);
+  }
+  ellipse(eaX2 + eX, eaY2 + eY, 15, 15);
+  ellipse(eaX4 + eX, eaY4 + eY, 15, 15);
+
+  // ai movements
+  if (paused == false) {
+    // ducking
+    if (punching == false) {
+      educking = false;
+    }
+    if (educking == true) {
+      educk();
+    } else {
+      if (epunching == false) {
+        ehY = 200;
+        eaX1 = 670;
+        eaY1 = 300;
+        eaX2 = 645;
+        eaY2 = 220;
+        eaX3 = 670;
+        eaY3 = 300;
+        eaX4 = 645;
+        eaY4 = 220;
+      }
+    }
+    // walking
+    if (engaged == true && walking == true && uX < 301) {
+      ewalking = true;
+    } else {
+      ewalking = false;
+    }
+    if (ewalking == true) {
+      ewalk();
+    } else {
+      if (ekicking == false) {
+        elY1 = 390;
+        elY2 = 460;
+        elY3 = 390;
+        elY4 = 460;
+      }
+    }
+    // punching
+    if (millis() - epunchingM < epunchLength) {
+      epunching = true;
+    } else {
+      epunching = false;
+    }
+    if (epunching == true) {
+      epunch();
+    } else {
+      if (educking == false) {
+        eaX1 = 670;
+        eaY1 = 300;
+        eaX2 = 645;
+        eaY2 = 220;
+      }
+    }
+    // kicking
+    if (millis() - ekickingM < ekickLength) {
+      ekicking = true;
+    } else {
+      ekicking = false;
+    }
+    if (ekicking == true) {
+      ekick();
+    } else {
+      if (ewalking == false) {
+        elX3 = 660;
+        elY3 = 390;
+        elX4 = 655;
+        elY4 = 460;
+      }
+    }
+    // jumping
+    eY = eY + ejumpSpeed;
+    ejumpSpeed = ejumpSpeed + 0.5;
+    if (eY > 0) {
+      eY = 0;
+    }
+    if (eY < 0) {
+      ejumping = true;
+    } else {
+      ejumping = false;
+    }
+
+    // engaging
+    if (uX >= eX + 250) {
+      engaged = true;
+    }
+    if (engaged == true) {
+      eX = uX - 250;
+      if (canEngage == true) {
+        justEngagedM = millis();
+        canEngage = false;
+      }
+    } else {
+      canEngage = true;
+    }
+  }
+
+  // ai acting
+  eStrength = 76 + (level*2);
+  reactTime = 500 - (level*5);
+  if (uX == -101.5) {
+    hitTime = (3000 - level*50)/2;
+  } else {
+    hitTime = 3000 - level*50;
+  }
+  if (paused == false && engaged == true && won == false && dead == false) {
+    // offense
+    if (millis() - hitTimerM >= hitTime) {
+      hitTimerM = millis();
+      if (millis() - justEngagedM > 1000) {
+        if (hitRand > 50) {
+          ekickingM = millis();
+        } else { 
+          epunchingM = millis();
+        }
+      }
+    }
+    if (millis() - hitTimerM > hitTime - reactTime - 20 && millis() - hitTimerM < hitTime - reactTime) {
+      hitRand = random(100);
+    }
+    if (millis() - hitTimerM > hitTime - reactTime && millis() - hitTimerM <= hitTime) {
+      fill(255, 0, 0);
+      textFont(font1, 50);
+      if (hitRand > 50) {
+        text("!", 630 + eX, 430 + eY);
+      } else {
+        text("!", 635 + eX, 280 + eY);
+      }
+    }
+    // defense
+    if (punching == true) {
+      if (punchBlock < eStrength) {
+        educking = true;
+      } else {
+        educking = false;
+      }
+    }
+    if (kicking == true) {
+      if (kickBlock < eStrength) {
+        if (ecanJump == true) {
+          ejumpSpeed = -10;
+          ecanJump = false;
+        }
+      } else {
+        ejumpSpeed = 0;
+      }
+    }
+  }
+
+  // HP
+  noStroke();
+  fill(255, 100, 100);
+  rect(500 - uHP*3, 40, uHP*3, 10);
+  rect(500, 40, eHP*3, 10);
+  stroke(0);
+  strokeWeight(1);
+  line(500, 40, 500, 49);
+  fill(0);
+  textFont(font1);
+  textAlign(CENTER);
+  text(round(uHP), 475 - uHP*3, 50);
+  text(round(eHP), eHP*3 + 525, 50);
+  if (uHP <= 0) {
+    dead = true;
+    uHP = 0;
+  }
+  if (eHP <= 0) {
+    won = true;
+    eHP = 0;
+  }
+
+  // losing health
+  if (paused == false) {
+    if (engaged == true && epunching == true && ducking == false) {
+      uHP = uHP - round(epunchPower/defensePower);
+    }
+    if (engaged == true && ekicking == true && jumping == false) {
+      uHP = uHP - round(ekickPower/defensePower);
+    }
+    if (engaged == true && punching == true && educking == false) {
+      eHP = eHP - round(punchPower/edefensePower);
+    }
+    if (engaged == true && kicking == true && ejumping == false) {
+      eHP = eHP - round(kickPower/edefensePower);
+    }
+  }
+
+  // floor
+  stroke(0);
+  strokeWeight(7);
+  line(100, height - 35, 900, height - 35);
+
+  // starting
+  fill(255);
+  noStroke();
+  rect(0, 0, curtainW, height);
+  rect(width - curtainW, 0, curtainW, height);
+  fill(255, 0, 0);
+  textAlign(CENTER);
+  textFont(font1, 150);
+  if (millis() - startM >= 0 && millis() - startM < 1000) {
+    text("LEVEL " + level, width/2, 275);
+  }
+  if (millis() - startM >= 1000 && millis() - startM < 2000) {
+    text("3", width/2, 275);
+  }
+  if (millis() - startM >= 2000 && millis() - startM < 3000) {
+    text("2", width/2, 275);
+  }
+  if (millis() - startM >= 3000 && millis() - startM < 4000) {
+    text("1", width/2, 275);
+  }
+  if (millis() - startM >= 4000 && millis() - startM < 4750) {
+    text("FIGHT!", width/2, 275);
+  }
+
+  // stuff
+  if (paused == true) {
+    pause();
+  }
+  if (dead == true) {
+    death();
+  }
+  if (won == true) {
+    winning();
+  }
+}
+
+void levels() {
+  arrow();
+  for (int i = 0; i < 10; i++) {
+    fill(255);
+    stroke(0);
+    ellipse(45 + levelsX + i*300, 200, 10, 10);
+    ellipse(265 + levelsX + i*300, 200, 10, 10);
+    ellipse(45 + levelsX + i*300, 430, 10, 10);
+    ellipse(265 + levelsX + i*300, 430, 10, 10);
+    rect(45 + levelsX + i*300, 195, 220, 240);
+    rect(40 + levelsX + i*300, 200, 230, 230);
+    stroke(255);
+    rect(43 + levelsX + i*300, 200, 224, 230);
+    rect(45 + levelsX + i*300, 198, 220, 234);
+  }
+  fill(0);
+  textSize(40);
+  textAlign(CENTER);
+  for (int i = 0; i < 10; i++) {
+    text("LEVEL", 155 + levelsX + i*300, 250);
+  }
+  text("ONE", 155 + levelsX, 290);
+  text("TWO", 455 + levelsX, 290);
+  text("THREE", 755 + levelsX, 290);
+  text("FOUR", 1055 + levelsX, 290);
+  text("FIVE", 1355 + levelsX, 290);
+  text("SIX", 1655 + levelsX, 290);
+  text("SEVEN", 1955 + levelsX, 290);
+  text("EIGHT", 2255 + levelsX, 290);
+  text("NINE", 2555 + levelsX, 290);
+  text("TEN", 2855 + levelsX, 290);
+  textSize(20);
+  text("STANDARD GLOVES", 155 + levelsX, 350);
+  text("STANDARD LEGS", 155 + levelsX, 380);
+  text("STANDARD HELMET", 155 + levelsX, 410);
+  text("RED GLOVES", 455 + levelsX, 350);
+  text("STANDARD LEGS", 455 + levelsX, 380);
+  text("STANDARD HELMET", 455 + levelsX, 410);
+  text("RED GLOVES", 755 + levelsX, 350);
+  text("RED LEGS", 755 + levelsX, 380);
+  text("STANDARD HELMET", 755 + levelsX, 410);
+  text("RED GLOVES", 1055 + levelsX, 350);
+  text("RED LEGS", 1055 + levelsX, 380);
+  text("RED HELMET", 1055 + levelsX, 410);
+  text("BLUE GLOVES", 1355 + levelsX, 350);
+  text("RED LEGS", 1355 + levelsX, 380);
+  text("RED HELMET", 1355 + levelsX, 410);
+  text("BLUE GLOVES", 1655 + levelsX, 350);
+  text("BLUE LEGS", 1655 + levelsX, 380);
+  text("RED HELMET", 1655 + levelsX, 410);
+  text("BLUE GLOVES", 1955 + levelsX, 350);
+  text("BLUE LEGS", 1955 + levelsX, 380);
+  text("BLUE HELMET", 1955 + levelsX, 410);
+  text("BRONZE GLOVES", 2255 + levelsX, 350);
+  text("BLUE LEGS", 2255 + levelsX, 380);
+  text("BLUE HELMET", 2255 + levelsX, 410);
+  text("BRONZE GLOVES", 2555 + levelsX, 350);
+  text("BRONZE LEGS", 2555 + levelsX, 380);
+  text("BLUE HELMET", 2555 + levelsX, 410);
+  text("BRONZE GLOVES", 2855 + levelsX, 350);
+  text("BRONZE LEGS", 2855 + levelsX, 380);
+  text("BRONZE HELMET", 2855 + levelsX, 410);
+  for (int i = 0; i < 9; i++) {
+    if (levelsCanDo < i + 2) {
+      noFill();
+      stroke(150);
+      strokeWeight(5);
+      ellipse(455 + levelsX + i*300, 300, 50, 60);
+      fill(150);
+      rect(425 + levelsX + i*300, 300, 60, 50);
+    }
+  }
+  // stars
+  for (int i = 0; i < 10; i++) {
+    if (wonLevel[i] == true) {
+      noStroke();
+      fill(200, 200, 50);
+      triangle(228 + i*300, 214, 261 + i*300, 214, 245 + i*300, 223);
+      triangle(245 + i*300, 203, 235 + i*300, 231, 250 + i*300, 218);
+      triangle(245 + i*300, 203, 255 + i*300, 231, 240 + i*300, 218);
+    }
+  }
+  scrollbar();
+  levelsX = -2.5*scrollbarX;
+}
+
+void shop() {
+  arrow();
+  text("PUNCHING", 40 + shopX, 170);
+  text("KICKING", 1240 + shopX, 170);
+  text("HELMETS", 2440 + shopX, 170);
+  for (int i = 0; i < 12; i++) {
+    fill(255);
+    stroke(0);
+    ellipse(45 + shopX + i*300, 200, 10, 10);
+    ellipse(265 + shopX + i*300, 200, 10, 10);
+    ellipse(45 + shopX + i*300, 430, 10, 10);
+    ellipse(265 + shopX + i*300, 430, 10, 10);
+    rect(45 + shopX + i*300, 195, 220, 240);
+    rect(40 + shopX + i*300, 200, 230, 230);
+    stroke(255);
+    rect(43 + shopX + i*300, 200, 224, 230);
+    rect(45 + shopX + i*300, 198, 220, 234);
+  }
+  for (int i = 0; i < 4; i++) {
+    fill(0);
+    textSize(20);
+    if (equipG == i + 1) {
+      text("EQUIPPED", 50 + shopX + i*300, 220);
+    }
+    if (equipK == i + 1) {
+      text("EQUIPPED", 1250 + shopX + i*300, 220);
+    }
+    if (equipH == i + 1) {
+      text("EQUIPPED", 2450 + shopX + i*300, 220);
+    }
+  }
+  // punching items
+  stroke(0);
+  strokeWeight(5);
+  fill(255);
+  ellipse(155 + shopX, 270, 60, 60);
+  fill(255, 0, 0);
+  ellipse(455 + shopX, 270, 60, 60);
+  fill(0, 0, 255);
+  ellipse(755 + shopX, 270, 60, 60);
+  fill(205, 127, 50);
+  ellipse(1055 + shopX, 270, 60, 60);
+  fill(0);
+  textAlign(CENTER);
+  text("STANDARD GLOVES", 155 + shopX, 350);
+  text("POWER   1", 155 + shopX, 380);
+  text("RED GLOVES", 455 + shopX, 350);
+  text("POWER   2", 455 + shopX, 380);
+  if (hasG[1] == false) {
+    text("COINS   25", 455 + shopX, 410);
+  }
+  text("BLUE GLOVES", 755 + shopX, 350);
+  text("POWER   3", 755 + shopX, 380);
+  if (hasG[2] == false) {
+    text("COINS   100", 755 + shopX, 410);
+  }
+  text("BRONZE KNUCKLES", 1055 + shopX, 350);
+  text("POWER   5", 1055 + shopX, 380);
+  if (hasG[3] == false) {
+    text("COINS   150", 1055 + shopX, 410);
+  }
+  // kicking items
+  line(1355 + shopX, 210, 1355 + shopX, 290);
+  stroke(255, 0, 0);
+  line(1655 + shopX, 210, 1655 + shopX, 290);
+  stroke(0, 0, 255);
+  line(1955 + shopX, 210, 1955 + shopX, 290);
+  stroke(205, 127, 50);
+  line(2255 + shopX, 210, 2255 + shopX, 290);
+  text("STANDARD LEGS", 1355 + shopX, 350);
+  text("POWER   1", 1355 + shopX, 380);
+  text("RED LEGS", 1655 + shopX, 350);
+  text("POWER   2", 1655 + shopX, 380);
+  if (hasK[1] == false) {
+    text("COINS   25", 1655 + shopX, 410);
+  }
+  text("BLUE LEGS", 1955 + shopX, 350);
+  text("POWER   3", 1955 + shopX, 380);
+  if (hasK[2] == false) {
+    text("COINS   100", 1955 + shopX, 410);
+  }
+  text("BRONZE LEGS", 2255 + shopX, 350);
+  text("POWER   5", 2255 + shopX, 380);
+  if (hasK[3] == false) {
+    text("COINS   150", 2255 + shopX, 410);
+  }
+  // defense items
+  stroke(0);
+  fill(255, 0, 0);
+  ellipse(2855 + shopX, 270, 80, 80);
+  fill(0, 0, 255);
+  ellipse(3155 + shopX, 270, 80, 80);
+  fill(205, 127, 50);
+  ellipse(3455 + shopX, 270, 80, 80);
+  fill(255);
+  ellipse(2555 + shopX, 270, 80, 80);
+  rect(2545 + shopX, 260, 48, 20);
+  rect(2845 + shopX, 260, 48, 20);
+  rect(3145 + shopX, 260, 48, 20);
+  rect(3445 + shopX, 260, 48, 20);
+  noStroke();
+  rect(2590 + shopX, 263, 8, 15);
+  rect(2890 + shopX, 263, 8, 15);
+  rect(3190 + shopX, 263, 8, 15);
+  rect(3490 + shopX, 263, 8, 15);
+  fill(0);
+  text("STANDARD HELMET", 2555 + shopX, 350);
+  text("POWER   1", 2555 + shopX, 380);
+  text("RED HELMET", 2855 + shopX, 350);
+  text("POWER   1.5", 2855 + shopX, 380);
+  if (hasH[1] == false) {
+    text("COINS   25", 2855 + shopX, 410);
+  }
+  text("BLUE HELMET", 3155 + shopX, 350);
+  text("POWER   2", 3155 + shopX, 380);
+  if (hasH[2] == false) {
+    text("COINS   100", 3155 + shopX, 410);
+  }
+  text("BRONZE HELMET", 3455 + shopX, 350);
+  text("POWER   2.5", 3455 + shopX, 380);
+  if (hasH[3] == false) {
+    text("COINS   150", 3455 + shopX, 410);
+  }
+  scrollbar();
+  shopX = -3.25*scrollbarX;
+}
+
+void about() {
+  arrow();
+  fill(0);
+  textSize(30);
+  textAlign(LEFT);
+  text("THANK YOU FOR PLAYING STICKFIGHTERS 2.", 50, 175);
+  text("TO PLAY THE ORIGINAL STICKFIGHTERS, GO HERE:", 50, 250);
+  text("https://github.com/chooj/StickFighters", 50, 300);
+  text("TO VIEW MY GITHUB PAGE, GO HERE:", 50, 375);
+  text("http://github.com/chooj", 50, 425);
+  stroke(button[1]);
+  line(50, 310, 569, 310);
+  stroke(button[2]);
+  line(50, 435, 374, 435);
+  if (mouseX > 50 && mouseX < 569 && mouseY > 275 && mouseY < 310) {
+    if (button[1] > 0) {
+      button[1] = button[1] - 17;
+    }
+  } else {
+    if (button[1] < 255) {
+      button[1] = button[1] + 17;
+    }
+  }
+  if (mouseX > 50 && mouseX < 374 && mouseY > 400 && mouseY < 435) {
+    if (button[2] > 0) {
+      button[2] = button[2] - 17;
+    }
+  } else {
+    if (button[2] < 255) {
+      button[2] = button[2] + 17;
+    }
+  }
+}
+
+void directions() {
+  arrow();
+  fill(255);
+  stroke(button[1]);
+  ellipse(940, 440, 60, 60);
+  stroke(0);
+  line(955, 440, 925, 440);
+  line(955, 440, 940, 425);
+  line(955, 440, 940, 455);
+  if (mouseX > 910 && mouseX < 970 && mouseY > 410 && mouseY < 470) {
+    if (button[1] > 0) {
+      button[1] = button[1] - 17;
+    }
+  } else {
+    if (button[1] < 255) {
+      button[1] = button[1] + 17;
+    }
+  }
+  fill(0);
+  textSize(30);
+  textAlign(LEFT);
+  text("PRESS SPACE TO PUNCH", 50, 180);
+  text("PRESS 'X' TO KICK", 50, 220);
+  text("PRESS THE UP ARROW TO JUMP", 50, 260);
+  text("PRESS THE DOWN ARROW TO DUCK", 50, 300);
+  text("PRESS 'D' TO DISENGAGE", 50, 340);
+  text("TO AVOID A PUNCH, DUCK", 50, 380);
+  text("TO AVOID A KICK, JUMP", 50, 420);
+  text("S ARE WARNINGS", 65, 460);
+  fill(255, 0, 0);
+  text("!", 50, 460);
+}
