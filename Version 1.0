@@ -301,7 +301,7 @@ void threeButtons() {
       }
     } else {
       if (button[i] < 255) {
-        button[i] = button[i] + 17;
+        button[i] = button[i] + 51;
       }
     }
   }
@@ -347,7 +347,7 @@ void arrow() {
     }
   } else {
     if (button[0] < 255) {
-      button[0] = button[0] + 17;
+      button[0] = button[0] + 51;
     }
   }
   fill(0);
@@ -682,6 +682,7 @@ void menu() {
   textFont(font1, 80);
   textAlign(CENTER);
   text("StickFighters", width/2, 130);
+  fill(205, 127, 50);
   textSize(120);
   text("2", 765, 140);
   threeButtons();
@@ -1439,7 +1440,7 @@ void about() {
     }
   } else {
     if (button[1] < 255) {
-      button[1] = button[1] + 17;
+      button[1] = button[1] + 51;
     }
   }
   if (mouseX > 50 && mouseX < 374 && mouseY > 400 && mouseY < 435) {
@@ -1448,7 +1449,7 @@ void about() {
     }
   } else {
     if (button[2] < 255) {
-      button[2] = button[2] + 17;
+      button[2] = button[2] + 51;
     }
   }
 }
@@ -1468,7 +1469,7 @@ void directions() {
     }
   } else {
     if (button[1] < 255) {
-      button[1] = button[1] + 17;
+      button[1] = button[1] + 51;
     }
   }
   fill(0);
