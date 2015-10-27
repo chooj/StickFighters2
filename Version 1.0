@@ -408,7 +408,7 @@ void draw() {
 
 void mousePressed() {
   if (inLevels == true) {
-    if (mouseY > 120 && mouseY < height) {
+    if (mouseY > height - 15 && mouseY < height) {
       scrolling = true;
     }
     if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
@@ -462,7 +462,7 @@ void mousePressed() {
         button[i] = 255;
       }
     }
-    if (mouseY > 120 && mouseY < height) {
+    if (mouseY > height - 15 && mouseY < height) {
       scrolling = true;
     }
   }
@@ -570,6 +570,22 @@ void mouseReleased() {
   if (inLevels == true) {
     if (scrolling == true) {
       scrolling = false;
+    }
+    for (int i = 0; i < 10; i++) {
+      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        inLevels = false;
+        if (knowsDirections == true) {
+          inGame = true;
+          level = i + 1;
+          startM = millis();
+          for (int j = 0; j < button.length; j++) {
+            button[j] = 255;
+          }
+        } else {
+          inDirections = true;
+          button[1] = 255;
+        }
+      }
     }
   }
   if (inShop == true) {
