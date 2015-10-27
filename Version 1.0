@@ -301,7 +301,7 @@ void threeButtons() {
       }
     } else {
       if (button[i] < 255) {
-        button[i] = button[i] + 51;
+        button[i] = button[i] + 42.5;
       }
     }
   }
@@ -347,7 +347,7 @@ void arrow() {
     }
   } else {
     if (button[0] < 255) {
-      button[0] = button[0] + 51;
+      button[0] = button[0] + 42.5;
     }
   }
   fill(0);
@@ -408,6 +408,9 @@ void draw() {
 
 void mousePressed() {
   if (inLevels == true) {
+    if (mouseY > 120 && mouseY < height) {
+      scrolling = true;
+    }
     if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
       inLevels = false;
       inMenu = true;
@@ -415,9 +418,6 @@ void mousePressed() {
       for (int i = 0; i < button.length; i++) {
         button[i] = 255;
       }
-    }
-    if (mouseX > scrollbarX && mouseX < scrollbarX + 200 && mouseY > height - 15 && mouseY < height) {
-      scrolling = true;
     }
     for (int i = 0; i < 10; i++) {
       if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
@@ -462,40 +462,8 @@ void mousePressed() {
         button[i] = 255;
       }
     }
-    if (mouseX > scrollbarX && mouseX < scrollbarX + 200 && mouseY > height - 15 && mouseY < height) {
+    if (mouseY > 120 && mouseY < height) {
       scrolling = true;
-    }
-    for (int i = 0; i < 4; i++) {
-      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        if (hasG[i] == true) {
-          equipG = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasG[i] = true;
-            coins = coins - cost[i];
-          }
-        }
-      }
-      if (mouseX > 1240 + levelsX + i*300 && mouseX < 1470 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        if (hasK[i] == true) {
-          equipK = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasK[i] = true;
-            coins = coins - cost[i];
-          }
-        }
-      }
-      if (mouseX > 2440 + levelsX + i*300 && mouseX < 2670 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        if (hasH[i] == true) {
-          equipH = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasH[i] = true;
-            coins = coins - cost[i];
-          }
-        }
-      }
     }
   }
   if (inAbout == true) {
@@ -607,6 +575,38 @@ void mouseReleased() {
   if (inShop == true) {
     if (scrolling == true) {
       scrolling = false;
+    }
+    for (int i = 0; i < 4; i++) {
+      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        if (hasG[i] == true) {
+          equipG = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasG[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+      if (mouseX > 1240 + levelsX + i*300 && mouseX < 1470 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        if (hasK[i] == true) {
+          equipK = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasK[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+      if (mouseX > 2440 + levelsX + i*300 && mouseX < 2670 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
+        if (hasH[i] == true) {
+          equipH = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasH[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
     }
   }
 }
@@ -1440,7 +1440,7 @@ void about() {
     }
   } else {
     if (button[1] < 255) {
-      button[1] = button[1] + 51;
+      button[1] = button[1] + 42.5;
     }
   }
   if (mouseX > 50 && mouseX < 374 && mouseY > 400 && mouseY < 435) {
@@ -1449,7 +1449,7 @@ void about() {
     }
   } else {
     if (button[2] < 255) {
-      button[2] = button[2] + 51;
+      button[2] = button[2] + 42.5;
     }
   }
 }
@@ -1469,7 +1469,7 @@ void directions() {
     }
   } else {
     if (button[1] < 255) {
-      button[1] = button[1] + 51;
+      button[1] = button[1] + 42.5;
     }
   }
   fill(0);
