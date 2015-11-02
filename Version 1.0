@@ -138,6 +138,40 @@ int[] cost = new int[4];
 float levelsX = 0;
 boolean[] wonLevel = new boolean[10];
 
+void equippingH() {
+  if (equipH == 1) {
+    fill(255);
+    defensePower = 1;
+  }
+  if (equipH == 2) {
+    fill(255, 0, 0);
+    defensePower = 1.5;
+  }
+  if (equipH == 3) {
+    fill(0, 0, 255);
+    defensePower = 2;
+  }
+  if (equipH == 4) {
+    fill(205, 127, 50);
+    defensePower = 2.5;
+  }
+}
+
+void edefensePowerCalc() {
+  if (level >= 1 && level <= 3) {
+    edefensePower = 1;
+  }
+  if (level >= 4 && level <= 6) {
+    edefensePower = 1.5;
+  }
+  if (level >= 7 && level <= 9) {
+    edefensePower = 2;
+  }
+  if (level == 10) {
+    edefensePower = 2.5;
+  }
+}
+
 void walkSetup() {
   lY1 = 382;
   lSpeed1 = 2;
@@ -277,8 +311,6 @@ void reset() {
   uY = 0;
   eX = 0;
   eY = 0;
-  uHP = 100;
-  eHP = 100;
   engaged = false;
   won = false;
   dead = false;
@@ -301,7 +333,7 @@ void threeButtons() {
       }
     } else {
       if (button[i] < 255) {
-        button[i] = button[i] + 42.5;
+        button[i] = button[i] + 25.5;
       }
     }
   }
@@ -347,7 +379,7 @@ void arrow() {
     }
   } else {
     if (button[0] < 255) {
-      button[0] = button[0] + 42.5;
+      button[0] = button[0] + 25.5;
     }
   }
   fill(0);
@@ -406,6 +438,14 @@ void draw() {
   }
 }
 
+void mouseReleased() {
+  if ((inLevels == true)||(inShop == true)) {
+    if (scrolling == true) {
+      scrolling = false;
+    }
+  }
+}
+
 void mousePressed() {
   if (inLevels == true) {
     if (mouseY > height - 15 && mouseY < height) {
@@ -422,6 +462,10 @@ void mousePressed() {
     for (int i = 0; i < 10; i++) {
       if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
         inLevels = false;
+        equippingH();
+        edefensePowerCalc();
+        uHP = defensePower*100;
+        eHP = edefensePower*100;
         if (knowsDirections == true) {
           inGame = true;
           level = i + 1;
@@ -432,6 +476,51 @@ void mousePressed() {
         } else {
           inDirections = true;
           button[1] = 255;
+        }
+      }
+    }
+  }
+  if (inShop == true) {
+    if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
+      inShop = false;
+      inMenu = true;
+      scrollbarX = 0;
+      for (int i = 0; i < button.length; i++) {
+        button[i] = 255;
+      }
+    }
+    if (mouseY > height - 15 && mouseY < height) {
+      scrolling = true;
+    }
+    for (int i = 0; i < 4; i++) {
+      if (mouseX > 40 + shopX + i*300 && mouseX < 270 + shopX + i*300 && mouseY > 195 && mouseY < 435) {
+        if (hasG[i] == true) {
+          equipG = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasG[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+      if (mouseX > 1240 + shopX + i*300 && mouseX < 1470 + shopX + i*300 && mouseY > 195 && mouseY < 435) {
+        if (hasK[i] == true) {
+          equipK = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasK[i] = true;
+            coins = coins - cost[i];
+          }
+        }
+      }
+      if (mouseX > 2440 + shopX + i*300 && mouseX < 2670 + shopX + i*300 && mouseY > 195 && mouseY < 435) {
+        if (hasH[i] == true) {
+          equipH = i + 1;
+        } else {
+          if (coins >= cost[i]) {
+            hasH[i] = true;
+            coins = coins - cost[i];
+          }
         }
       }
     }
@@ -451,19 +540,6 @@ void mousePressed() {
       for (int i = 0; i < button.length; i++) {
         button[i] = 255;
       }
-    }
-  }
-  if (inShop == true) {
-    if (mouseX > 30 && mouseX < 90 && mouseY > 30 && mouseY < 90) {
-      inShop = false;
-      inMenu = true;
-      scrollbarX = 0;
-      for (int i = 0; i < button.length; i++) {
-        button[i] = 255;
-      }
-    }
-    if (mouseY > height - 15 && mouseY < height) {
-      scrolling = true;
     }
   }
   if (inAbout == true) {
@@ -560,67 +636,6 @@ void mousePressed() {
           }
         } else {
           paused = true;
-        }
-      }
-    }
-  }
-}
-
-void mouseReleased() {
-  if (inLevels == true) {
-    if (scrolling == true) {
-      scrolling = false;
-    }
-    for (int i = 0; i < 10; i++) {
-      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        inLevels = false;
-        if (knowsDirections == true) {
-          inGame = true;
-          level = i + 1;
-          startM = millis();
-          for (int j = 0; j < button.length; j++) {
-            button[j] = 255;
-          }
-        } else {
-          inDirections = true;
-          button[1] = 255;
-        }
-      }
-    }
-  }
-  if (inShop == true) {
-    if (scrolling == true) {
-      scrolling = false;
-    }
-    for (int i = 0; i < 4; i++) {
-      if (mouseX > 40 + levelsX + i*300 && mouseX < 270 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        if (hasG[i] == true) {
-          equipG = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasG[i] = true;
-            coins = coins - cost[i];
-          }
-        }
-      }
-      if (mouseX > 1240 + levelsX + i*300 && mouseX < 1470 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        if (hasK[i] == true) {
-          equipK = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasK[i] = true;
-            coins = coins - cost[i];
-          }
-        }
-      }
-      if (mouseX > 2440 + levelsX + i*300 && mouseX < 2670 + levelsX + i*300 && mouseY > 195 && mouseY < 435 && levelsCanDo >= i + 1) {
-        if (hasH[i] == true) {
-          equipH = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasH[i] = true;
-            coins = coins - cost[i];
-          }
         }
       }
     }
@@ -724,22 +739,7 @@ void game() {
   // body
   line(bX + uX, bY + uY, bX + uX, bY + 115 + uY);
   // head
-  if (equipH == 1) {
-    fill(255);
-    defensePower = 1;
-  }
-  if (equipH == 2) {
-    fill(255, 0, 0);
-    defensePower = 1.5;
-  }
-  if (equipH == 3) {
-    fill(0, 0, 255);
-    defensePower = 2;
-  }
-  if (equipH == 4) {
-    fill(205, 127, 50);
-    defensePower = 2.5;
-  }
+  equippingH();
   ellipse(hX + uX, hY + uY, 70, 70);
   fill(255);
   rect(hX - 10 + uX, hY - 10 + uY, 43, 20);
@@ -896,10 +896,10 @@ void game() {
   }
 
   // ai
+  edefensePowerCalc();
   if (level == 1) {
     epunchPower = 1;
     ekickPower = 1;
-    edefensePower = 1;
   }
   if (level >= 2 && level <= 4) {
     epunchPower = 2;
@@ -921,18 +921,6 @@ void game() {
   }
   if (level >= 9 && level <= 10) {
     ekickPower = 5;
-  }
-  if (level >= 2 && level <= 3) {
-    edefensePower = 1;
-  }
-  if (level >= 4 && level <= 6) {
-    edefensePower = 1.5;
-  }
-  if (level >= 7 && level <= 9) {
-    edefensePower = 2;
-  }
-  if (level == 10) {
-    edefensePower = 2.5;
   }
   stroke(0);
   strokeWeight(5);
@@ -1169,16 +1157,16 @@ void game() {
   // losing health
   if (paused == false) {
     if (engaged == true && epunching == true && ducking == false) {
-      uHP = uHP - round(epunchPower/defensePower);
+      uHP = uHP - epunchPower;
     }
     if (engaged == true && ekicking == true && jumping == false) {
-      uHP = uHP - round(ekickPower/defensePower);
+      uHP = uHP - ekickPower;
     }
     if (engaged == true && punching == true && educking == false) {
-      eHP = eHP - round(punchPower/edefensePower);
+      eHP = eHP - punchPower;
     }
     if (engaged == true && kicking == true && ejumping == false) {
-      eHP = eHP - round(kickPower/edefensePower);
+      eHP = eHP - kickPower;
     }
   }
 
@@ -1300,9 +1288,9 @@ void levels() {
     if (wonLevel[i] == true) {
       noStroke();
       fill(200, 200, 50);
-      triangle(228 + i*300, 214, 261 + i*300, 214, 245 + i*300, 223);
-      triangle(245 + i*300, 203, 235 + i*300, 231, 250 + i*300, 218);
-      triangle(245 + i*300, 203, 255 + i*300, 231, 240 + i*300, 218);
+      triangle(228 + i*300 + levelsX, 214, 261 + i*300 + levelsX, 214, 245 + i*300 + levelsX, 223);
+      triangle(245 + i*300 + levelsX, 203, 235 + i*300 + levelsX, 231, 250 + i*300 + levelsX, 218);
+      triangle(245 + i*300 + levelsX, 203, 255 + i*300 + levelsX, 231, 240 + i*300 + levelsX, 218);
     }
   }
   scrollbar();
@@ -1456,7 +1444,7 @@ void about() {
     }
   } else {
     if (button[1] < 255) {
-      button[1] = button[1] + 42.5;
+      button[1] = button[1] + 25.5;
     }
   }
   if (mouseX > 50 && mouseX < 374 && mouseY > 400 && mouseY < 435) {
@@ -1465,7 +1453,7 @@ void about() {
     }
   } else {
     if (button[2] < 255) {
-      button[2] = button[2] + 42.5;
+      button[2] = button[2] + 25.5;
     }
   }
 }
@@ -1485,7 +1473,7 @@ void directions() {
     }
   } else {
     if (button[1] < 255) {
-      button[1] = button[1] + 42.5;
+      button[1] = button[1] + 25.5;
     }
   }
   fill(0);
