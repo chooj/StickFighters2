@@ -43,7 +43,7 @@ float jumpSpeed;
 boolean jumping = false;
 float punchPower = 1;
 float kickPower = 1;
-float defensePower = 0;
+float defensePower = 1;
 
 // ai variables
 float eHP = 100;
@@ -83,7 +83,7 @@ float ejumpSpeed;
 boolean ejumping = false;
 float epunchPower = 1;
 float ekickPower = 1;
-float edefensePower = 0;
+float edefensePower = 1;
 
 // ai acting
 int reactTime = 495;
@@ -145,15 +145,15 @@ void equippingH() {
   }
   if (equipH == 2) {
     fill(255, 0, 0);
-    defensePower = 1.5;
+    defensePower = 1.25;
   }
   if (equipH == 3) {
     fill(0, 0, 255);
-    defensePower = 2;
+    defensePower = 1.5;
   }
   if (equipH == 4) {
     fill(205, 127, 50);
-    defensePower = 2.5;
+    defensePower = 2;
   }
 }
 
@@ -162,13 +162,13 @@ void edefensePowerCalc() {
     edefensePower = 1;
   }
   if (level >= 4 && level <= 6) {
-    edefensePower = 1.5;
+    edefensePower = 1.25;
   }
   if (level >= 7 && level <= 9) {
-    edefensePower = 2;
+    edefensePower = 1.5;
   }
   if (level == 10) {
-    edefensePower = 2.5;
+    edefensePower = 2;
   }
 }
 
@@ -311,6 +311,8 @@ void reset() {
   uY = 0;
   eX = 0;
   eY = 0;
+  uHP = defensePower*100;
+  eHP = edefensePower*100;
   engaged = false;
   won = false;
   dead = false;
@@ -494,33 +496,30 @@ void mousePressed() {
     }
     for (int i = 0; i < 4; i++) {
       if (mouseX > 40 + shopX + i*300 && mouseX < 270 + shopX + i*300 && mouseY > 195 && mouseY < 435) {
+        if (hasG[i] == false && coins >= cost[i]) {
+          hasG[i] = true;
+          coins = coins - cost[i];
+        }
         if (hasG[i] == true) {
           equipG = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasG[i] = true;
-            coins = coins - cost[i];
-          }
         }
       }
       if (mouseX > 1240 + shopX + i*300 && mouseX < 1470 + shopX + i*300 && mouseY > 195 && mouseY < 435) {
+        if (hasK[i] == false && coins >= cost[i]) {
+          hasK[i] = true;
+          coins = coins - cost[i];
+        }
         if (hasK[i] == true) {
           equipK = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasK[i] = true;
-            coins = coins - cost[i];
-          }
         }
       }
       if (mouseX > 2440 + shopX + i*300 && mouseX < 2670 + shopX + i*300 && mouseY > 195 && mouseY < 435) {
+        if (hasH[i] == false && coins >= cost[i]) {
+          hasH[i] = true;
+          coins = coins - cost[i];
+        }
         if (hasH[i] == true) {
           equipH = i + 1;
-        } else {
-          if (coins >= cost[i]) {
-            hasH[i] = true;
-            coins = coins - cost[i];
-          }
         }
       }
     }
@@ -584,7 +583,9 @@ void mousePressed() {
         inGame = false;
         inLevels = true;
         if (won == true) {
-          levelsCanDo = levelsCanDo + 1;
+          if (levelsCanDo <= level + 1) {
+            levelsCanDo = level + 1;
+          }
           wonLevel[level-1] = true;
         }
         reset();
@@ -595,7 +596,9 @@ void mousePressed() {
         inGame = false;
         inMenu = true;
         if (won == true) {
-          levelsCanDo = levelsCanDo + 1;
+          if (levelsCanDo <= level + 1) {
+            levelsCanDo = level + 1;
+          }
           wonLevel[level-1] = true;
         }
         reset();
@@ -607,7 +610,9 @@ void mousePressed() {
         inGame = false;
         inShop = true;
         if (won == true) {
-          levelsCanDo = levelsCanDo + 1;
+          if (levelsCanDo <= level + 1) {
+            levelsCanDo = level + 1;
+          }
           wonLevel[level-1] = true;
         }
         reset();
@@ -677,7 +682,7 @@ void keyPressed() {
       jumpSpeed = -10;
       canJump = false;
     }
-    if (key == 'd' && kicking == false && engaged == true && uX > -101.5) {
+    if (key == 'z' && kicking == false && engaged == true && uX > -101.5) {
       engaged = false;
       disengageM = millis();
       lY1 = 382;
@@ -789,6 +794,7 @@ void game() {
     fill(205, 127, 50);
     punchPower = 5;
   }
+  stroke(0);
   ellipse(aX2 + uX, aY2 + uY, 15, 15);
   ellipse(aX4 + uX, aY4 + uY, 15, 15);
 
@@ -930,13 +936,13 @@ void game() {
   if (edefensePower == 1) {
     fill(255);
   }
-  if (edefensePower == 1.5) {
+  if (edefensePower == 1.25) {
     fill(255, 0, 0);
   }
-  if (edefensePower == 2) {
+  if (edefensePower == 1.5) {
     fill(0, 0, 255);
   }
-  if (edefensePower == 2.5) {
+  if (edefensePower == 2) {
     fill(205, 127, 50);
   }
   ellipse(ehX + eX, ehY + eY, 70, 70);
@@ -1134,17 +1140,59 @@ void game() {
 
   // HP
   noStroke();
-  fill(255, 100, 100);
-  rect(500 - uHP*3, 40, uHP*3, 10);
-  rect(500, 40, eHP*3, 10);
+  textFont(font1);
+  textAlign(CENTER);
+  if (defensePower == 1) {
+    fill(255, 100, 100);
+    rect(500 - uHP*3, 40, uHP*3, 10);
+    fill(0);
+    text(round(uHP), 475 - uHP*3, 50);
+  }
+  if (defensePower == 1.25) {
+    fill(255, 100, 100);
+    rect(500 - uHP*2.4, 40, uHP*2.4, 10);
+    fill(0);
+    text(round(uHP), 475 - uHP*2.4, 50);
+  }
+  if (defensePower == 1.5) {
+    fill(255, 100, 100);
+    rect(500 - uHP*2, 40, uHP*2, 10);
+    fill(0);
+    text(round(uHP), 475 - uHP*2, 50);
+  }
+  if (defensePower == 2) {
+    fill(255, 100, 100);
+    rect(500 - uHP*1.5, 40, uHP*1.5, 10);
+    fill(0);
+    text(round(uHP), 475 - uHP*1.5, 50);
+  }
+  if (edefensePower == 1) {
+    fill(255, 100, 100);
+    rect(500, 40, eHP*3, 10);
+    fill(0);
+    text(round(eHP), eHP*3 + 525, 50);
+  }
+  if (edefensePower == 1.25) {
+    fill(255, 100, 100);
+    rect(500, 40, eHP*2.4, 10);
+    fill(0);
+    text(round(eHP), eHP*2.4 + 525, 50);
+  }
+  if (edefensePower == 1.5) {
+    fill(255, 100, 100);
+    rect(500, 40, eHP*2, 10);
+    fill(0);
+    text(round(eHP), eHP*2 + 525, 50);
+  }
+  if (edefensePower == 2) {
+    fill(255, 100, 100);
+    rect(500, 40, eHP*1.5, 10);
+    fill(0);
+    text(round(eHP), eHP*1.5 + 525, 50);
+  }
   stroke(0);
   strokeWeight(1);
   line(500, 40, 500, 49);
-  fill(0);
-  textFont(font1);
-  textAlign(CENTER);
-  text(round(uHP), 475 - uHP*3, 50);
-  text(round(eHP), eHP*3 + 525, 50);
   if (uHP <= 0) {
     dead = true;
     uHP = 0;
@@ -1155,7 +1203,7 @@ void game() {
   }
 
   // losing health
-  if (paused == false) {
+  if (paused == false && won == false && dead == false) {
     if (engaged == true && epunching == true && ducking == false) {
       uHP = uHP - epunchPower;
     }
@@ -1406,17 +1454,17 @@ void shop() {
   text("STANDARD HELMET", 2555 + shopX, 350);
   text("POWER   1", 2555 + shopX, 380);
   text("RED HELMET", 2855 + shopX, 350);
-  text("POWER   1.5", 2855 + shopX, 380);
+  text("POWER   2", 2855 + shopX, 380);
   if (hasH[1] == false) {
     text("COINS   25", 2855 + shopX, 410);
   }
   text("BLUE HELMET", 3155 + shopX, 350);
-  text("POWER   2", 3155 + shopX, 380);
+  text("POWER   3", 3155 + shopX, 380);
   if (hasH[2] == false) {
     text("COINS   100", 3155 + shopX, 410);
   }
   text("BRONZE HELMET", 3455 + shopX, 350);
-  text("POWER   2.5", 3455 + shopX, 380);
+  text("POWER   5", 3455 + shopX, 380);
   if (hasH[3] == false) {
     text("COINS   150", 3455 + shopX, 410);
   }
@@ -1483,7 +1531,7 @@ void directions() {
   text("PRESS 'X' TO KICK", 50, 220);
   text("PRESS THE UP ARROW TO JUMP", 50, 260);
   text("PRESS THE DOWN ARROW TO DUCK", 50, 300);
-  text("PRESS 'D' TO DISENGAGE", 50, 340);
+  text("PRESS 'Z' TO DISENGAGE", 50, 340);
   text("TO AVOID A PUNCH, DUCK", 50, 380);
   text("TO AVOID A KICK, JUMP", 50, 420);
   text("S ARE WARNINGS", 65, 460);
